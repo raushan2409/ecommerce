@@ -1,0 +1,14 @@
+.container {
+  border: 2px solid black;
+  height: auto;
+  width: 50%;
+  margin: auto;
+  border-radius: 30px;
+  margin-top: 20px;
+  background-color: rgb(159, 183, 174);
+}
+Form.Label {
+  margin: auto;
+  border: 1px solid red;
+}
+/* name emid phoneno */

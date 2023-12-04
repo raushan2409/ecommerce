@@ -30,10 +30,13 @@ export const CartProvider = ({ children }) => {
 
     try {
       let name = cleanGmailAddress(athCtx.email) || "userdata";
+      
+      console.log("name",name)
       let response = await axios.put(
-        `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}`,
+        `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
         {
-           name: "dummyp", quantity: 1 
+          //  name: "dummyp", quantity: 1 
+          prod
         }
       );
       // let result = await response.json();

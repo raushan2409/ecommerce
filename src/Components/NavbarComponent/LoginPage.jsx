@@ -2,7 +2,7 @@ import classes from "../style/LoginPage.module.css";
 
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ProductList from "../ProductList";
-import { Redirect, Route, Routes, useNavigate } from "react-router-dom";
+import { Redirect, Route, Routes, json, useNavigate } from "react-router-dom";
 import AuthContext from "../context/auth-context";
 import { useCart } from "../context/CartContext";
 import SendDataToBackend from "../SendDataToBackend";
@@ -60,8 +60,11 @@ const Login = () => {
         }
       })
       .then((data) => {
-        // console.log("data in login page", data);
+        console.log("data in login page", data);
         authCtx.login(data.idToken);
+        // console.log(data);
+        localStorage.setItem('idToken',data.idToken)
+
         authCtx.emailHand(data.email);
         // authCtx.login(data.idToken,data.email);
 

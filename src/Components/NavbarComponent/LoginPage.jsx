@@ -6,7 +6,7 @@ import { Redirect, Route, Routes, json, useNavigate } from "react-router-dom";
 import AuthContext from "../context/auth-context";
 import { useCart } from "../context/CartContext";
 import SendDataToBackend from "../SendDataToBackend";
-// // import SendDataToBackend from "../SendDataToBackend";
+// import SendDataToBackend from "../SendDataToBackend";
 
 const Login = () => {
   const emailInputRef = useRef();
@@ -60,10 +60,11 @@ const Login = () => {
         }
       })
       .then((data) => {
-        console.log("data in login page", data);
+        // console.log("data in login page", data);
         authCtx.login(data.idToken);
         // console.log(data);
         localStorage.setItem('idToken',data.idToken)
+        // localStorage.setItem('email',data.email)
 
         authCtx.emailHand(data.email);
         // authCtx.login(data.idToken,data.email);
@@ -71,38 +72,14 @@ const Login = () => {
         navigate("/"); // Redirect to /productList
         // console.log("Before sendingDataToEmail");
 
-        // Send email data to the backend
-        // sendEmailToBackend(enteredEmail);
+       
       })
       .catch((err) => {
         alert(err.message);
       });
   };
 
-  const sendEmailToBackend = (email) => {
-    const cleanedEmail = email.replace(/[@.]/g, "");
-
-    const dataForBackend = { email: cleanedEmail, cart: prod };
-
-    fetch(
-      `https://crudcrud.com/api/fb7c816473fd4b008c9740d2b3430a20/${cleanedEmail}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dataForBackend)
-      }
-    )
-      .then((result) => result.json())
-      .then((resp) => {
-        console.log("Response from backend:", resp);
-      })
-      .catch((error) => {
-        console.log("Error in sending data to backend:", error);
-      });
-  };
+ 
 
   return (
     <>

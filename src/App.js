@@ -13,21 +13,21 @@ function App() {
   useEffect(() => {
     const verifyUser = async () => {
       const idTokon = localStorage.getItem("idToken");
-      console.log("idtoken",idTokon);
+      console.log("idtoken", idTokon);
       try {
-        if(idTokon){
-        const data = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDSAdz79HZaDlV3ROmXP6OdJFdscaXCuaM`,
-          { idTokon: idTokon }
-        );
+        if (idTokon) {
+          const data = await axios.post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDSAdz79HZaDlV3ROmXP6OdJFdscaXCuaM`,
+            { idTokon: idTokon }
+          );
 
-        console.log("data", data);
-      }
+          // console.log("data in useEffect", data);
+        }
       } catch (error) {
         console.log("Error is ", error);
       }
     };
-    verifyUser()
+    verifyUser();
   }, []);
 
   return (

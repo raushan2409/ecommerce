@@ -16,6 +16,8 @@ export const CartProvider = ({ children }) => {
 
   const [prod, setProd] = useState([]);
 
+  //    UPDATING CART QUANTITY IF THE PRODUCT IS SAME
+
   const addToCart = async (product) => {
     const existingProduct = prod.find((item) => item.id === product.id);
 
@@ -29,9 +31,11 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      let name = cleanGmailAddress(athCtx.email) || "userdata";
+      let tempName = localStorage.getItem("email")
+      let name = cleanGmailAddress(athCtx.email) || tempName ;
       
-      console.log("name",name)
+      console.log("name inside",name)
+      localStorage.setItem('email',name)
       let response = await axios.put(
         `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
         {
@@ -49,6 +53,8 @@ export const CartProvider = ({ children }) => {
 
     // localStorage.setItem("CartItem", JSON.stringify(prod));
   };
+
+  
 
   return (
     <CartContext.Provider value={{ prod, addToCart }}>

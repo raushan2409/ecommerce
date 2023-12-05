@@ -15,29 +15,24 @@ export default function AllRoutes() {
 
   return (
     <Routes>
+    
+    {console.log("isLoggedIn",isLoggedIn)}
+    {console.log("authcontext token value",authCtx.token)}
       {isLoggedIn ? (
-        <Route path="/" element={<Home />} />
+        <>
+          <Route path="/contact" element={<ContactUsPage />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/about" element={<About />} />
+        </>
       ) : (
-        <Route path="/" element={<Navigate to="/login" />} />
+        <>
+          <Route path="/contact" element={<Navigate to="/login" />} />
+          <Route path="/store" element={<Navigate to="/login" />} />
+          <Route path="/about" element={<Navigate to="/login" />} />
+        </>
       )}
 
-      {isLoggedIn ? (
-        <Route path="/contact" element={<ContactUsPage />} />
-      ) : (
-        <Route path="/contact" element={<Navigate to="/login" />} />
-      )}
-
-      {isLoggedIn ? (
-        <Route path="/store" element={<Store />} />
-      ) : (
-        <Route path="/store" element={<Navigate to="/login" />} />
-      )}
-      {isLoggedIn ? (
-        <Route path="/about" element={<About />} />
-      ) : (
-        <Route path="/about" element={<Navigate to="/login" />} />
-      )}
-
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/store/:productId" element={<UserDetailsAfterClick />} />
       <Route path="*" element={<Login />} />

@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import AuthContext from "./auth-context";
 import axios from "axios";
-import { json } from "react-router-dom";
+// import { json } from "react-router-dom";
 
 const CartContext = createContext();
 
@@ -21,44 +21,44 @@ export const CartProvider = ({ children }) => {
   }
 
   const [prod, setProd] = useState([]);
-
+console.log("prod->",prod);
   //update data to firebase
-  useEffect(() => {
-    const updateCartToFireBase = async (updatedProd) => {
-      console.log("updatedProd",updatedProd);
-      try {
-        let tempName = localStorage.getItem("email");
-        let name = cleanGmailAddress(athCtx.email) || tempName;
+  // useEffect(() => {
+  //   const updateCartToFireBase = async (updatedProd) => {
+  //     console.log("updatedProd",updatedProd);
+  //     try {
+  //       let tempName = localStorage.getItem("email");
+  //       let name = cleanGmailAddress(athCtx.email) || tempName;
 
-        localStorage.setItem("email", name);
-        console.log("product before sending", updatedProd);
+  //       localStorage.setItem("email", name);
+  //       console.log("updated before sending", updatedProd);
 
-        localStorage.setItem(name, JSON.stringify(updatedProd));
+  //       console.log("prod before sending", prod);
+  //       // localStorage.setItem(name, JSON.stringify(updatedProd));
 
-                
+  //       let response = await axios.post(
+  //         `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
+  //         // updatedProd
+  //         prod
+  //       );
+  //       // let result = await response.json();
+  //       let result = response;
 
-        let response = await axios.post(
-          `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
-          // updatedProd
-          prod
-        );
-        // let result = await response.json();
-        let result = response;
+  //       console.log("result is", result);
+  //     } catch (error) {
+  //       console.log("Error is ", error);
+  //     }
+  //   };
 
-        console.log("result is", result);
-      } catch (error) {
-        console.log("Error is ", error);
-      }
-    };
-
-    if (prod.length > 0) {
-      updateCartToFireBase(prod);
-    }
-  }, [athCtx.email, prod]);
+  //   if (prod.length > 0) {
+  //     updateCartToFireBase(prod);
+  //   }
+  // }, [athCtx.email, prod]);
 
   // add to cart functionality
 
   const addToCart = async (product) => {
+    console.log("product", product);
     const existingProduct = prod.find((item) => item.id === product.id);
 
     if (existingProduct) {
@@ -71,11 +71,23 @@ export const CartProvider = ({ children }) => {
         return updatedCart;
       });
     } else {
-      setProd((prevProd) => [...prevProd, { ...product, quantity: 1 }]);
-      
+      // setProd((prevProd) => [...prevProd, { ...product, quantity: 1 }]);
+
+      let tempName = localStorage.getItem("email");
+      let name = cleanGmailAddress(athCtx.email) || tempName;
+      try {
+        let response = await axios.post(
+          `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
+          // updatedProd
+          product
+          );
+          setProd((prevProd) => [...prevProd, { ...product }]);
+
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
-  
 
   // get data from firebase
   const getDataFromFirebase = useCallback(async () => {
@@ -91,11 +103,21 @@ export const CartProvider = ({ children }) => {
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
-      // console.log("value of data above if block", data);
+      console.log("value of data above if block", data);
 
       if (data) {
-        const dataArray = Object.values(data);
-        console.log("dataArray", dataArray);
+        // const dataArray = Object.values(data);
+        const dataArray = Object.keys(data);
+
+        const updatedData = dataArray.map((elem)=>{
+          // console.log("elem",data[elem]);
+          // console.log([{fireBaseId:elem ,...data[elem]}])
+          return {fireBaseId:elem ,...data[elem]}
+
+        })
+        // console.log("dataArray", dataArray);
+        console.log("updatedData", updatedData);
+        setProd(updatedData)
       } else {
         console.log("data", data);
       }
@@ -104,10 +126,9 @@ export const CartProvider = ({ children }) => {
     }
   }, [athCtx.email]);
 
-  
   useEffect(() => {
     getDataFromFirebase();
-  }, [addToCart]);
+  }, []);
 
   // console.log("Prod value ",prod)
   return (

@@ -12,42 +12,22 @@ const AuthContext = React.createContext({
 });
 export const AuthContextProvider = (props) => {
   // const { prod } = useCart();
-  const [token, setToken] = useState(localStorage.getItem('idToken'));
+  const [token, setToken] = useState(localStorage.getItem("idToken"));
   const [email, setEmail] = useState(null);
 
-  // const initialToken = localStorage.getItem("idToken");
-  // const initialEmail = localStorage.getItem("email");
-
-  // const [userIsLoggedIn,setUserisLogin] = useState(false)
-
   const userIsLoggedIn = !!token;
-  // const userIsLoggedIn = !!initialToken;
-
-  // useEffect(()=>{
-  //   setUserisLogin(!!initialToken)
-  // },[token])
-
-  // console.log("userisloggedin",userIsLoggedIn);
-
-  // USER WILL STAY LOGGED IN EVEN AFTER REFRESH
-
-  // console.log("value of initial token is ",initialToken);
 
   const emailHandler = (email) => {
     setEmail(email);
   };
 
   const loginHandler = (token) => {
-    // setToken(token);
     setToken(token);
-    // setUserisLogin(!!initialToken)
   };
   const logoutHandler = () => {
-    // setIsLogin(false)
     setToken(null);
-    // localStorage.removeItem("email");
-    // localStorage.removeItem("idToken");
-    // setUserisLogin(false)
+    localStorage.removeItem("email");
+    localStorage.removeItem("idToken");
   };
 
   const contextValue = {

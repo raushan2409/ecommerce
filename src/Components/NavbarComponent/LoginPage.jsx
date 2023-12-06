@@ -1,12 +1,12 @@
 import classes from "../style/LoginPage.module.css";
 
-import React, { useContext, useEffect, useRef, useState } from "react";
-import ProductList from "../ProductList";
-import { Redirect, Route, Routes, json, useNavigate } from "react-router-dom";
+import React, { useContext, useRef, useState } from "react";
+
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/auth-context";
 import { useCart } from "../context/CartContext";
-import SendDataToBackend from "../SendDataToBackend";
 // import SendDataToBackend from "../SendDataToBackend";
+import axios from "axios";
 
 const Login = () => {
   const emailInputRef = useRef();
@@ -37,49 +37,53 @@ const Login = () => {
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSAdz79HZaDlV3ROmXP6OdJFdscaXCuaM";
     }
 
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then((res) => {
+    const register = async () => {
+      try {
+        const response = await axios.post(url, {
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        });
         setIsLoading(false);
-        if (res.ok) {
-          return res.json();
+
+        if (response.status === 200) {
+          const data = response.data;
+          authCtx.login(data.idToken);
+          localStorage.setItem("idToken", data.idToken);
+          localStorage.setItem("email", data.email);
+          authCtx.emailHand(data.email);
+          navigate("/"); // Redirect to /productList
         } else {
-          return res.json().then((data) => {
-            let errorMessage = "Authentication failed!";
-            throw new Error(errorMessage);
-          });
+          let errorMessage = "Authentication failed!";
+          throw new Error(errorMessage);
         }
-      })
-      .then((data) => {
-        // console.log("data in login page", data);
-        authCtx.login(data.idToken);
-        // console.log(data);
-        localStorage.setItem('idToken',data.idToken)
-        // localStorage.setItem('email',data.email)
-
-        authCtx.emailHand(data.email);
-        // authCtx.login(data.idToken,data.email);
-
-        navigate("/"); // Redirect to /productList
-        // console.log("Before sendingDataToEmail");
-
-       
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
+      } catch (err) {
+        alert("error in login page ", err.message);
+      }
+    };
+    register(url);
   };
 
- 
+  // verify weather user is genuine or not
+  useEffect(() => {
+    const verifyUser = async () => {
+      const idTokon = localStorage.getItem("idToken");
+      // console.log("idtoken", idTokon);
+      try {
+        if (idTokon) {
+          const data = await axios.post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDSAdz79HZaDlV3ROmXP6OdJFdscaXCuaM`,
+            { idTokon: idTokon }
+          );
+
+          // console.log("data in useEffect", data);
+        }
+      } catch (error) {
+        console.log("Error is ", error);
+      }
+    };
+    verifyUser();
+  }, []);
 
   return (
     <>

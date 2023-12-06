@@ -11,13 +11,9 @@ import UserDetailsAfterClick from "./UserDetailsAfterClick";
 export default function AllRoutes() {
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
-  // console.log("Isloggedin status in allroutes", isLoggedIn);
 
   return (
     <Routes>
-    
-    {console.log("isLoggedIn",isLoggedIn)}
-    {console.log("authcontext token value",authCtx.token)}
       {isLoggedIn ? (
         <>
           <Route path="/contact" element={<ContactUsPage />} />

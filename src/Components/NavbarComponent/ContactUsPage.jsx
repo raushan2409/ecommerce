@@ -20,7 +20,7 @@ export default function ContactUsPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     addContactToFirebase(formData);
   };
   async function addContactToFirebase(formData) {

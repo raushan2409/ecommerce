@@ -1,20 +1,16 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Modal, Nav } from "react-bootstrap";
 
 import "../style/Cart.css";
 import { useCart } from "../context/CartContext";
-// import SendDataToBackend from "../SendDataToBackend";
 
 function Cart(props) {
-  const { prod } = useCart();
-  // console.log("Product inside Cart", prod);
+  const { prod, addToCart } = useCart();
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  // console.log("Prod inside Cart.jsx", prod);
 
   return (
     <>

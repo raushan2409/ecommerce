@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
   }
 
   const [prod, setProd] = useState([]);
-console.log("prod->",prod);
+  console.log("prod->", prod);
   //update data to firebase
   // useEffect(() => {
   //   const updateCartToFireBase = async (updatedProd) => {
@@ -59,17 +59,39 @@ console.log("prod->",prod);
 
   const addToCart = async (product) => {
     console.log("product", product);
-    const existingProduct = prod.find((item) => item.id === product.id);
+    const existingProductIndex = prod.findIndex((item) => item.id === product.id);
 
-    if (existingProduct) {
-      setProd((prevProd) => {
-        const updatedCart = prevProd.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-        return updatedCart;
-      });
+    
+  if (existingProductIndex !== -1) {
+    const updatedProducts = [...prod];
+    updatedProducts[existingProductIndex].quantity += 1;
+
+    const updatedProduct = updatedProducts[existingProductIndex];
+
+    try {
+      const tempName = localStorage.getItem("email");
+      const name = cleanGmailAddress(athCtx.email) || tempName;
+
+      await axios.patch(
+        `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}/${updatedProduct.fireBaseId}.json`,
+        updatedProduct
+      );
+
+      setProd(updatedProducts);
+    } catch (error) {
+      console.log(error);
+    }
+
+      // setProd((prevProd) => {
+      //   const updatedCart = prevProd.map((item) =>
+      //     item.id === product.id ? { ...item, quantity: item.quantity + 1 }
+      //       : item
+      //   );
+        // console.log("value of updated cart is ", updatedCart);
+      
+
+        // return updatedCart;
+      // });
     } else {
       // setProd((prevProd) => [...prevProd, { ...product, quantity: 1 }]);
 
@@ -80,9 +102,14 @@ console.log("prod->",prod);
           `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
           // updatedProd
           product
-          );
-          setProd((prevProd) => [...prevProd, { ...product }]);
+        );
 
+        setProd((prevProd) => [
+          ...prevProd,
+          { fireBaseId: response.data.name, ...product },
+        ]);
+        // console.log("response",response);
+        // console.log("response.data.name",response.data.name);
       } catch (error) {
         console.log("error", error);
       }
@@ -109,15 +136,14 @@ console.log("prod->",prod);
         // const dataArray = Object.values(data);
         const dataArray = Object.keys(data);
 
-        const updatedData = dataArray.map((elem)=>{
+        const updatedData = dataArray.map((elem) => {
           // console.log("elem",data[elem]);
           // console.log([{fireBaseId:elem ,...data[elem]}])
-          return {fireBaseId:elem ,...data[elem]}
-
-        })
+          return { fireBaseId: elem, ...data[elem] };
+        });
         // console.log("dataArray", dataArray);
         console.log("updatedData", updatedData);
-        setProd(updatedData)
+        setProd(updatedData);
       } else {
         console.log("data", data);
       }

@@ -51,7 +51,7 @@ function Cart(props) {
                   {" "}
                   Quantity:
                 </span>
-                ${item.quantity}
+                {item.quantity}
               </span>
               <hr />
             </div>

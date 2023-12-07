@@ -67,36 +67,28 @@ export const CartProvider = ({ children }) => {
     updatedProducts[existingProductIndex].quantity += 1;
 
     const updatedProduct = updatedProducts[existingProductIndex];
+    // console.log("updatedProdcut quantity",updatedProduct);
 
     try {
       const tempName = localStorage.getItem("email");
-      const name = cleanGmailAddress(athCtx.email) || tempName;
+      const name = cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
 
       await axios.patch(
         `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}/${updatedProduct.fireBaseId}.json`,
         updatedProduct
       );
+      
 
       setProd(updatedProducts);
     } catch (error) {
-      console.log(error);
+      console.log("error in quantity block is ",error);
     }
 
-      // setProd((prevProd) => {
-      //   const updatedCart = prevProd.map((item) =>
-      //     item.id === product.id ? { ...item, quantity: item.quantity + 1 }
-      //       : item
-      //   );
-        // console.log("value of updated cart is ", updatedCart);
-      
-
-        // return updatedCart;
-      // });
     } else {
       // setProd((prevProd) => [...prevProd, { ...product, quantity: 1 }]);
 
       let tempName = localStorage.getItem("email");
-      let name = cleanGmailAddress(athCtx.email) || tempName;
+      let name = cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
       try {
         let response = await axios.post(
           `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
@@ -119,8 +111,9 @@ export const CartProvider = ({ children }) => {
   // get data from firebase
   const getDataFromFirebase = useCallback(async () => {
     try {
+      const dataLocalStorage = localStorage.getItem("email")
       const userEmail =
-        cleanGmailAddress(athCtx.email) || localStorage.getItem("email");
+        cleanGmailAddress(athCtx.email) || cleanGmailAddress(dataLocalStorage) ;
       let url = `https://react-http-8fe4c-default-rtdb.firebaseio.com`;
       // console.log("userEmail", userEmail);
 

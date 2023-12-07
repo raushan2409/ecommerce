@@ -5,12 +5,17 @@ import "../style/Cart.css";
 import { useCart } from "../context/CartContext";
 
 function Cart(props) {
-  const { prod, addToCart } = useCart();
+  const { prod, addToCart,removeItemHandler } = useCart();
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const deleteHandler = (id)=>{
+    console.log("inside deletehandler",id);
+    removeItemHandler(id)
+  }
 
   return (
     <>
@@ -53,6 +58,9 @@ function Cart(props) {
                 </span>
                 {item.quantity}
               </span>
+              <Button onClick={()=>deleteHandler(item.fireBaseId)} variant="danger" size="sm">
+                X
+              </Button>
               <hr />
             </div>
           ))}

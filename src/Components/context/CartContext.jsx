@@ -22,68 +22,36 @@ export const CartProvider = ({ children }) => {
 
   const [prod, setProd] = useState([]);
   console.log("prod->", prod);
-  //update data to firebase
-  // useEffect(() => {
-  //   const updateCartToFireBase = async (updatedProd) => {
-  //     console.log("updatedProd",updatedProd);
-  //     try {
-  //       let tempName = localStorage.getItem("email");
-  //       let name = cleanGmailAddress(athCtx.email) || tempName;
 
-  //       localStorage.setItem("email", name);
-  //       console.log("updated before sending", updatedProd);
-
-  //       console.log("prod before sending", prod);
-  //       // localStorage.setItem(name, JSON.stringify(updatedProd));
-
-  //       let response = await axios.post(
-  //         `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}.json`,
-  //         // updatedProd
-  //         prod
-  //       );
-  //       // let result = await response.json();
-  //       let result = response;
-
-  //       console.log("result is", result);
-  //     } catch (error) {
-  //       console.log("Error is ", error);
-  //     }
-  //   };
-
-  //   if (prod.length > 0) {
-  //     updateCartToFireBase(prod);
-  //   }
-  // }, [athCtx.email, prod]);
-
-  // add to cart functionality
+  /* Add To Cart Functionality */
 
   const addToCart = async (product) => {
     console.log("product", product);
-    const existingProductIndex = prod.findIndex((item) => item.id === product.id);
+    const existingProductIndex = prod.findIndex(
+      (item) => item.id === product.id
+    );
 
-    
-  if (existingProductIndex !== -1) {
-    const updatedProducts = [...prod];
-    updatedProducts[existingProductIndex].quantity += 1;
+    if (existingProductIndex !== -1) {
+      const updatedProducts = [...prod];
+      updatedProducts[existingProductIndex].quantity += 1;
 
-    const updatedProduct = updatedProducts[existingProductIndex];
-    // console.log("updatedProdcut quantity",updatedProduct);
+      const updatedProduct = updatedProducts[existingProductIndex];
+      // console.log("updatedProdcut quantity",updatedProduct);
 
-    try {
-      const tempName = localStorage.getItem("email");
-      const name = cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
+      try {
+        const tempName = localStorage.getItem("email");
+        const name =
+          cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
 
-      await axios.patch(
-        `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}/${updatedProduct.fireBaseId}.json`,
-        updatedProduct
-      );
-      
+        await axios.patch(
+          `https://react-http-8fe4c-default-rtdb.firebaseio.com/${name}/${updatedProduct.fireBaseId}.json`,
+          updatedProduct
+        );
 
-      setProd(updatedProducts);
-    } catch (error) {
-      console.log("error in quantity block is ",error);
-    }
-
+        setProd(updatedProducts);
+      } catch (error) {
+        console.log("error in quantity block is ", error);
+      }
     } else {
       // setProd((prevProd) => [...prevProd, { ...product, quantity: 1 }]);
 
@@ -108,12 +76,12 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // get data from firebase
+  /* Get Data From Firebase */
   const getDataFromFirebase = useCallback(async () => {
     try {
-      const dataLocalStorage = localStorage.getItem("email")
+      const dataLocalStorage = localStorage.getItem("email");
       const userEmail =
-        cleanGmailAddress(athCtx.email) || cleanGmailAddress(dataLocalStorage) ;
+        cleanGmailAddress(athCtx.email) || cleanGmailAddress(dataLocalStorage);
       let url = `https://react-http-8fe4c-default-rtdb.firebaseio.com`;
       // console.log("userEmail", userEmail);
 
@@ -143,7 +111,23 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.log("error in getdata from firebase is ", error);
     }
-  }, [athCtx.email]);
+  }, [athCtx.email,prod]);
+
+  const removeItemHandler = async (id) => {
+    const tempName = localStorage.getItem("email");
+    const name = cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
+    
+    try {
+      let url = `https://react-http-8fe4c-default-rtdb.firebaseio.com`
+      await fetch(`${url}/${name}/${id}.json`, {
+        method: "DELETE",
+      });
+      
+    } catch (error) {
+      console.log(error);
+    }
+    // getDataFromFirebase()
+  };
 
   useEffect(() => {
     getDataFromFirebase();
@@ -151,7 +135,7 @@ export const CartProvider = ({ children }) => {
 
   // console.log("Prod value ",prod)
   return (
-    <CartContext.Provider value={{ prod, addToCart }}>
+    <CartContext.Provider value={{ prod, addToCart,removeItemHandler }}>
       {children}
     </CartContext.Provider>
   );

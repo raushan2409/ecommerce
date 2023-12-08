@@ -34,6 +34,7 @@ function Cart(props) {
           <Modal.Title>Your Cart</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        
           {prod.map((item, index) => (
             <div key={index}>
               <img

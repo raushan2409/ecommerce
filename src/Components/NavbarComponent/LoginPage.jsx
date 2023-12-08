@@ -1,6 +1,6 @@
 import classes from "../style/LoginPage.module.css";
 
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/auth-context";

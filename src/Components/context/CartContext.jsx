@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import AuthContext from "./auth-context";
@@ -21,12 +22,12 @@ export const CartProvider = ({ children }) => {
   }
 
   const [prod, setProd] = useState([]);
-  console.log("prod->", prod);
+  // console.log("prod->", prod);
 
   /* Add To Cart Functionality */
 
   const addToCart = async (product) => {
-    console.log("product", product);
+    // console.log("product", product);
     const existingProductIndex = prod.findIndex(
       (item) => item.id === product.id
     );
@@ -77,7 +78,7 @@ export const CartProvider = ({ children }) => {
   };
 
   /* Get Data From Firebase */
-  const getDataFromFirebase = useCallback(async () => {
+  const getDataFromFirebase = useCallback(async () => {    
     try {
       const dataLocalStorage = localStorage.getItem("email");
       const userEmail =
@@ -91,7 +92,7 @@ export const CartProvider = ({ children }) => {
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
-      console.log("value of data above if block", data);
+      // console.log("value of data above if block", data);
 
       if (data) {
         // const dataArray = Object.values(data);
@@ -103,29 +104,34 @@ export const CartProvider = ({ children }) => {
           return { fireBaseId: elem, ...data[elem] };
         });
         // console.log("dataArray", dataArray);
-        console.log("updatedData", updatedData);
+        // console.log("updatedData", updatedData);
         setProd(updatedData);
-      } else {
-        console.log("data", data);
+       } else {
+        console.log("data in upd data", data);
       }
     } catch (error) {
       console.log("error in getdata from firebase is ", error);
     }
   }, [athCtx.email,prod]);
 
-  const removeItemHandler = async (id) => {
+  const removeItemHandler =  (id) => {
     const tempName = localStorage.getItem("email");
     const name = cleanGmailAddress(athCtx.email) || cleanGmailAddress(tempName);
     
     try {
       let url = `https://react-http-8fe4c-default-rtdb.firebaseio.com`
-      await fetch(`${url}/${name}/${id}.json`, {
+      fetch(`${url}/${name}/${id}.json`, {
         method: "DELETE",
       });
       
     } catch (error) {
       console.log(error);
     }
+    const updatedItemsAfterDelete = prod.filter(item=> item.fireBaseId !== id)    
+    
+    // console.log('updated item after delete',updatedItemsAfterDelete);
+    setProd(updatedItemsAfterDelete)
+    
     // getDataFromFirebase()
   };
 

@@ -137,7 +137,8 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     getDataFromFirebase();
-  }, []);
+  }, [athCtx.email,prod]); //added athctx.email and prod so if any of them will change than the cart value will be again updated
+  
 
   // console.log("Prod value ",prod)
   return (
